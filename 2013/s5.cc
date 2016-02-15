@@ -1,4 +1,4 @@
-// 2013/s5
+// 2013/s5 Canadian Computing Competition Solution
 
 #include <algorithm>
 #include <iostream>
@@ -24,26 +24,6 @@ int main() {
     target -= factor;
     total_cost += cost;
   }
+
   cout << total_cost << endl;
-
-
-  /*
-  vector<int> x(target + 5);
-  x[2] = 1;
-
-  for (int i = 2; i < target; ++i) {
-    for (int j = 1; j * j <= i; ++j) {
-      if (i % j == 0) {
-        int k = i / j;
-        if (i + j <= target) {
-          x[i + j] = x[i + j] ? min(x[i] + k, x[i + j]) : x[i] + k;
-        }
-        if (i + k <= target) {
-          x[i + k] = x[i + k] ? min(x[i] + j, x[i + k]) : x[i] + j;
-        }
-      }
-    }
-  }
-  cout << x[target] << endl;
-  */
 }

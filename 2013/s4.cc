@@ -7,32 +7,26 @@
 
 using namespace std;
 
-struct Comp {
-  int tall;
-  int sh;
-
-  inline bool operator< (const Comp& x) const {
-    return this->tall < x.tall;
-  }
-};
-
-bool IsShorter(const vector<Comp> &comp, const int x, const int y,
-               const int num_people) {
+// Breadth first search.
+bool IsShorter(const vector<vector<int>> &comp, const int num_people,
+               const int x, const int y) {
+  // Once we have visited a position once, no need to do it again.
   vector<bool> visited(num_people);
+
+  // Keep track of the next nodes we want to search from.
   vector<int> stack;
 
   stack.push_back(x);
   while (stack.size() > 0) {
     int t = stack.back();
     stack.pop_back();
-    auto iter = lower_bound(comp.begin(), comp.end(), Comp{t, 0});
-    for (; iter != comp.end() && iter->tall == t; ++iter) {
-      if (iter->sh == y) {
+    for (auto shorter : comp[t]) {
+      if (shorter == y) {
         return true;
       }
-      if (!visited[iter->sh]) {
-        stack.push_back(iter->sh);
-        visited[iter->sh] = true;
+      if (!visited[shorter]) {
+        stack.push_back(shorter);
+        visited[shorter] = true;
       }
     }
   }
@@ -41,28 +35,28 @@ bool IsShorter(const vector<Comp> &comp, const int x, const int y,
 }
 
 int main() {
+  // Makes program three times faster. Most of the time is spent reading data.
+  std::ios_base::sync_with_stdio(false);
+
   // Load problem.
   int num_people, num_comp;
   cin >> num_people >> num_comp;
 
-  vector<vector<int>> comp(num_people);
-  for (auto &c : comp) {
+  vector<vector<int>> comp(num_people + 1);
+  for (int i = 0; i < num_comp; ++i) {
     int tall, sh;
     cin >> tall >> sh;
     comp[tall].push_back(sh);
   }
-
-  // This is the majority of the cost... Maybe we shouldn't sort?
-  sort(comp.begin(), comp.end());
 
   int x, y;
   cin >> x >> y;
 
   // Solve problem.
   const char *answer = "unknown";
-  if (IsShorter(comp, x, y, num_people)) {
+  if (IsShorter(comp, num_people, x, y)) {
     answer = "yes";
-  } else if (IsShorter(comp, y, x, num_people)) {
+  } else if (IsShorter(comp, num_people, y, x)) {
     answer = "no";
   }
   cout << answer << endl;
